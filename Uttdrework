@@ -1,0 +1,447 @@
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local EquipRemote = ReplicatedStorage:WaitForChild("Equip")
+local Equip2Remote = ReplicatedStorage:WaitForChild("Equip2")
+local TitleRemote = ReplicatedStorage:WaitForChild("Title")
+local JoinRemote = ReplicatedStorage:WaitForChild("Join")
+local monsterMapping = {
+    froggit = 1, vegetoid = 2, loox = 3, migosp = 4, moldsmal = 5, whimsum = 6, napstablook = 7,
+    snowdrake = 8, icecap = 9, lesserdog = 10, gyftrot = 11, jerry = 12, doggo = 13, dogami = 14,
+    dogaressa = 15, greaterdog = 17, aaron = 18, woshua = 19, moldbygg = 20, shyren = 21, vulkin = 22,
+    tsunderplane = 23, pyrope = 24, royalguard01 = 25, royalguard02 = 26, mettaton = 27, finalfroggit = 28,
+    whimsalot = 29, astigmatism = 30, knightknight = 31, madjick = 32, bluesoul = 33, greensoul = 34,
+    orangesoul = 35, purplesoul = 36, yellowsoul = 37, cyansoul = 38, dummy = 39, temmie = 40,
+    maddummy = 41, alphys = 42, glyde = 43, sosorry = 44, memoryhead = 45, endogeny = 46, reaperbird = 47,
+    lemonbread = 48, snowdrakesmother = 49, parsnik = 50, moldessa = 51, migospel = 52, rudinn = 501,
+    hathy = 502, ponman = 503, jigsawry = 504, cround = 505, kround = 506, rabbick = 507, bloxer = 508,
+    clover = 509, starwalkerbird = 510, rudinnranger = 511, headhathy = 512, frisk = 1001, toriel = 1002,
+    papyrus = 1003, undyne = 1004, muffet = 1005, mettatonex = 1006, omegaflowey = 1007, undynetheundying = 1008,
+    mettatonneo = 1009, sans = 1010, asgore = 1011, madmewmew = 1012, asriel = 1013, kris = 2001, susie = 2002,
+    ralsei = 2003, lancer = 2004, king = 2005, jevil = 2006
+}
+local mapMapping = {
+    ruins = "Zona1", snowdin = "Zona2", waterfall = "Zona3", hotland = "Zona4", core = "Zona5",
+    genocideruins = "Zona1b", genocidesnowdin = "Zona2b", genocidewaterfall = "Zona3b", genocidehotland = "Zona4b", genocidecore = "Zona5b",
+    newhome = "Zona01", theend = "Zona02", lastcorridor = "Zona03", truelab = "Zona05", sandbox = "Zona06",
+    randomizerofchaos = "ZonaDelta01", fieldentrance = "ZonaDelta1", halfway = "ZonaDelta2", shopinthefield = "ZonaDelta3",
+    forestentrance = "ZonaDelta4", mastersmith = "ZonaDelta5", laststretch = "ZonaDelta6", castlegate = "ZonaDelta7",
+    darkprison = "ZonaDelta8", throneroom = "ZonaDelta9"
+}
+local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
+local Window = Rayfield:CreateWindow{
+    Name = "UTTD SCRIPT FREE INF ROBUX ACTUAL",
+    Icon = 77392032855648,
+    LoadingTitle = "UTTD SCRIPTSSAFSD",
+    LoadingSubtitle = "by fun",
+    ShowText = "gayfeild",
+    Theme = "Ocean",
+    ToggleUIKeybind = "K",
+    DisableRayfieldPrompts = true,
+    DisableBuildWarnings = true,
+    ConfigurationSaving = {
+        Enabled = true,
+        FolderName = nil,
+        FileName = "UTTD"
+    },
+    Discord = {
+        Enabled = false,
+        Invite = "noinvitelink",
+        RememberJoins = true
+    },
+    KeySystem = true,
+    KeySettings = {
+        Title = "what the key",
+        Subtitle = "enter key h",
+        Note = "you know what it is",
+        FileName = "Key",
+        SaveKey = false,
+        GrabKeyFromSite = false,
+        Key = {"6uttdscript9"}
+    }
+}
+local towerNames = {
+    "froggit","vegetoid","loox","migosp","moldsmal","whimsum","napstablook","snowdrake","icecap","lesserdog",
+    "gyftrot","jerry","doggo","dogami","dogaressa","greaterdog","aaron","woshua","moldbygg","shyren","vulkin",
+    "tsunderplane","pyrope","royalguard01","royalguard02","mettaton","finalfroggit","whimsalot","astigmatism",
+    "knightknight","madjick","bluesoul","greensoul","orangesoul","purplesoul","yellowsoul","cyansoul","dummy",
+    "temmie","maddummy","alphys","glyde","sosorry","memoryhead","endogeny","reaperbird","lemonbread",
+    "snowdrakesmother","parsnik","moldessa","migospel","rudinn","hathy","ponman","jigsawry","cround","kround",
+    "rabbick","bloxer","clover","starwalkerbird","rudinnranger","headhathy","frisk","toriel","papyrus","undyne",
+    "muffet","mettatonex","omegaflowey","undynetheundying","mettatonneo","sans","asgore","madmewmew","asriel",
+    "kris","susie","ralsei","lancer","king","jevil"
+}
+local mapNames = {
+    "ruins","snowdin","waterfall","hotland","core",
+    "genocideruins","genocidesnowdin","genocidewaterfall","genocidehotland","genocidecore",
+    "newhome","theend","lastcorridor","truelab","sandbox",
+    "randomizerofchaos","fieldentrance","halfway","shopinthefield",
+    "forestentrance","mastersmith","laststretch","castlegate",
+    "darkprison","throneroom"
+}
+local selectedTower = towerNames[1]
+local selectedMap = mapNames[1]
+local specialSlotEnabled = false
+local dupeEnabled = false
+local placerPlayer2Enabled = false
+local inGameSelectedTower = towerNames[1]
+local inGameSpecialEnabled = false
+local inGameShowWherePlace = false
+local inGameShowFightToggle = false
+local handlerEnableHandler = false
+local handlerAutoUpgrade = false
+local handlerAutoSell = false
+local TabLobby = Window:CreateTab("Lobby", 77392032855648)
+TabLobby:CreateDropdown{
+    Name = "Tower",
+    Options = towerNames,
+    CurrentOption = {towerNames[1]},
+    MultipleOptions = false,
+    Flag = "LobbyTowerDropdown",
+    Callback = function(opt) selectedTower = opt[1] end
+}
+TabLobby:CreateDropdown{
+    Name = "Map",
+    Options = mapNames,
+    CurrentOption = {mapNames[1]},
+    MultipleOptions = false,
+    Flag = "LobbyMapDropdown",
+    Callback = function(opt) selectedMap = opt[1] end
+}
+TabLobby:CreateSection("Equip shit")
+TabLobby:CreateButton{
+    Name = "Equip",
+    Callback = function()
+        local monsterId = monsterMapping[selectedTower]
+        if not monsterId then return end
+        if specialSlotEnabled then
+            Equip2Remote:FireServer(monsterId - 1000, 1)
+        else
+            EquipRemote:FireServer(monsterId, 1)
+        end
+    end
+}
+TabLobby:CreateButton{
+    Name = "Unequip",
+    Callback = function()
+        local monsterId = monsterMapping[selectedTower]
+        if not monsterId then return end
+        if specialSlotEnabled then
+            Equip2Remote:FireServer(monsterId - 1000, 2)
+        else
+            EquipRemote:FireServer(monsterId, 2)
+        end
+    end
+}
+TabLobby:CreateToggle{
+    Name = "Special slot",
+    CurrentValue = false,
+    Flag = "LobbySpecialSlot",
+    Callback = function(value) specialSlotEnabled = value end
+}
+TabLobby:CreateSection("Morph stuff")
+TabLobby:CreateButton{
+    Name = "Morph",
+Callback = function()
+    local monsterId = monsterMapping[selectedTower]
+    if not monsterId then return end
+    TitleRemote:FireServer(monsterId + 1000)
+end
+}
+TabLobby:CreateButton{
+    Name = "Rainbow Morph",
+Callback = function()
+    local monsterId = monsterMapping[selectedTower]
+    if not monsterId then return end
+    TitleRemote:FireServer(19)
+    TitleRemote:FireServer(monsterId + 1000)
+end
+}
+TabLobby:CreateSection("Dupe")
+TabLobby:CreateToggle{
+    Name = "Dupe",
+    CurrentValue = false,
+    Flag = "Duping",
+    Callback = function(value)
+        dupeEnabled = value
+        if dupeEnabled then
+            spawn(function()
+                while dupeEnabled do
+                    local monsterId = monsterMapping[selectedTower]
+                    if monsterId then
+                        EquipRemote:FireServer(monsterId, 1)
+                        wait()
+                        EquipRemote:FireServer(monsterId, 2)
+                        EquipRemote:FireServer(monsterId, 2)
+                        EquipRemote:FireServer(monsterId, 2)
+                        wait(0.1)
+                    end
+                end
+            end)
+        end
+    end
+}
+
+TabLobby:CreateSection("Join")
+TabLobby:CreateButton{
+    Name = "Join map",
+    Callback = function()
+     local zonaValue = mapMapping[selectedMap]
+     if not zonaValue then return end
+     JoinRemote:FireServer(zonaValue)
+    end
+}
+TabLobby:CreateSection("Chaotic")
+TabLobby:CreateButton{
+    Name = "Morph all obtainable",
+    Callback = function()
+        local function generateArgsFromRanges(...)
+            local args = {}
+            for _, range in ipairs({...}) do
+                local startNum, endNum = range:match("^(%d+)%-(%d+)$")
+                if startNum and endNum then
+                    startNum, endNum = tonumber(startNum), tonumber(endNum)
+                    for i = startNum, endNum do
+                        table.insert(args, i)
+                    end
+                else
+                    table.insert(args, tonumber(range))
+                end
+            end
+            return args
+        end
+        local ranges = {"1001-1032", "1039-1052", "1501-1512", "2002-2006", "2008-2013", "3004-3006"}
+        local args = generateArgsFromRanges(unpack(ranges))
+        for _, arg in ipairs(args) do
+            game:GetService("ReplicatedStorage").Title:FireServer(arg)
+        end
+    end
+}
+TabLobby:CreateButton{
+    Name = "Morph all unobtainable",
+    Callback = function()
+        local function generateArgsFromRanges(...)
+            local args = {}
+            for _, range in ipairs({...}) do
+                local startNum, endNum = range:match("^(%d+)%-(%d+)$")
+                if startNum and endNum then
+                    startNum, endNum = tonumber(startNum), tonumber(endNum)
+                    for i = startNum, endNum do
+                        table.insert(args, i)
+                    end
+                else
+                    table.insert(args, tonumber(range))
+                end
+            end
+            return args
+        end
+        local ranges = {"1001-1052", "1501-1512", "2001-2013", "3001-3006"}
+        local args = generateArgsFromRanges(unpack(ranges))
+        for _, arg in ipairs(args) do
+            game:GetService("ReplicatedStorage").Title:FireServer(arg)
+        end
+    end
+}
+TabLobby:CreateSection("Autofarm")
+local TabPlacer = Window:CreateTab("Placer", 77392032855648)
+TabPlacer:CreateToggle{
+    Name = "Player2",
+    CurrentValue = false,
+    Flag = "Player2Val",
+    Callback = function(value) placerPlayer2Enabled = value end
+}
+TabPlacer:CreateSection("TrueLab")
+TabPlacer:CreateButton{
+    Name = "Moldessa 15kg",
+    Callback = function()
+    if placerPlayer2Enabled then
+        game:GetService("ReplicatedStorage"):WaitForChild("Place", 9e9):FireServer(51, CFrame.new(-7.21688604, 383.094055, -23.3589668, 1, 0, 0, 0, 1, 0, 0, 0, 1), false, 3210)
+        game:GetService("ReplicatedStorage"):WaitForChild("Place", 9e9):FireServer(51, CFrame.new(-7.21688604, 383.094055, -23.3589668, 1, 0, 0, 0, 1, 0, 0, 0, 1), false, 3210)
+        game:GetService("ReplicatedStorage"):WaitForChild("Place", 9e9):FireServer(51, CFrame.new(-7.21688604, 383.094055, -23.3589668, 1, 0, 0, 0, 1, 0, 0, 0, 1), false, 3210)
+        game:GetService("ReplicatedStorage"):WaitForChild("Place", 9e9):FireServer(51, CFrame.new(-7.21688604, 383.094055, -23.3589668, 1, 0, 0, 0, 1, 0, 0, 0, 1), false, 3210)
+        game:GetService("ReplicatedStorage"):WaitForChild("Place", 9e9):FireServer(51, CFrame.new(-7.21688604, 383.094055, -23.3589668, 1, 0, 0, 0, 1, 0, 0, 0, 1), false, 3210)
+        game:GetService("ReplicatedStorage"):WaitForChild("Place", 9e9):FireServer(51, CFrame.new(-7.21688604, 383.094055, -23.3589668, 1, 0, 0, 0, 1, 0, 0, 0, 1), false, 3210)
+        game:GetService("ReplicatedStorage"):WaitForChild("Place", 9e9):FireServer(51, CFrame.new(-7.21688604, 383.094055, -23.3589668, 1, 0, 0, 0, 1, 0, 0, 0, 1), false, 3210)
+        game:GetService("ReplicatedStorage"):WaitForChild("Place", 9e9):FireServer(51, CFrame.new(-7.21688604, 383.094055, -23.3589668, 1, 0, 0, 0, 1, 0, 0, 0, 1), false, 3210)
+        game:GetService("ReplicatedStorage"):WaitForChild("Place", 9e9):FireServer(51, CFrame.new(-7.21688604, 383.094055, -23.3589668, 1, 0, 0, 0, 1, 0, 0, 0, 1), false, 3210)
+        game:GetService("ReplicatedStorage"):WaitForChild("Place", 9e9):FireServer(51, CFrame.new(-7.21688604, 383.094055, -23.3589668, 1, 0, 0, 0, 1, 0, 0, 0, 1), false, 3210)
+    else
+        game:GetService("ReplicatedStorage"):WaitForChild("Place", 9e9):FireServer(51, CFrame.new(37.0656853, 383.094055, 50.3605156, 1, 0, 0, 0, 1, 0, 0, 0, 1), false, 3210)
+        game:GetService("ReplicatedStorage"):WaitForChild("Place", 9e9):FireServer(51, CFrame.new(37.0656853, 383.094055, 50.3605156, 1, 0, 0, 0, 1, 0, 0, 0, 1), false, 3210)
+        game:GetService("ReplicatedStorage"):WaitForChild("Place", 9e9):FireServer(51, CFrame.new(37.0656853, 383.094055, 50.3605156, 1, 0, 0, 0, 1, 0, 0, 0, 1), false, 3210)
+        game:GetService("ReplicatedStorage"):WaitForChild("Place", 9e9):FireServer(51, CFrame.new(37.0656853, 383.094055, 50.3605156, 1, 0, 0, 0, 1, 0, 0, 0, 1), false, 3210)
+        game:GetService("ReplicatedStorage"):WaitForChild("Place", 9e9):FireServer(51, CFrame.new(37.0656853, 383.094055, 50.3605156, 1, 0, 0, 0, 1, 0, 0, 0, 1), false, 3210)
+        game:GetService("ReplicatedStorage"):WaitForChild("Place", 9e9):FireServer(51, CFrame.new(37.0656853, 383.094055, 50.3605156, 1, 0, 0, 0, 1, 0, 0, 0, 1), false, 3210)
+        game:GetService("ReplicatedStorage"):WaitForChild("Place", 9e9):FireServer(51, CFrame.new(37.0656853, 383.094055, 50.3605156, 1, 0, 0, 0, 1, 0, 0, 0, 1), false, 3210)
+        game:GetService("ReplicatedStorage"):WaitForChild("Place", 9e9):FireServer(51, CFrame.new(37.0656853, 383.094055, 50.3605156, 1, 0, 0, 0, 1, 0, 0, 0, 1), false, 3210)
+        game:GetService("ReplicatedStorage"):WaitForChild("Place", 9e9):FireServer(51, CFrame.new(37.0656853, 383.094055, 50.3605156, 1, 0, 0, 0, 1, 0, 0, 0, 1), false, 3210)
+        game:GetService("ReplicatedStorage"):WaitForChild("Place", 9e9):FireServer(51, CFrame.new(37.0656853, 383.094055, 50.3605156, 1, 0, 0, 0, 1, 0, 0, 0, 1), false, 3210)
+    end
+end
+}
+TabPlacer:CreateButton{
+    Name = "Glyde 32Kg",
+    Callback = function()
+    if placerPlayer2Enabled then
+        game:GetService("ReplicatedStorage"):WaitForChild("Place", 9e9):FireServer(43, CFrame.new(-6.62330151, 387.914642, -12.9029284, 1, 0, 0, 0, 1, 0, 0, 0, 1), false, 3210)
+        game:GetService("ReplicatedStorage"):WaitForChild("Place", 9e9):FireServer(43, CFrame.new(-6.62330151, 387.914642, -12.9029284, 1, 0, 0, 0, 1, 0, 0, 0, 1), false, 3210)
+        game:GetService("ReplicatedStorage"):WaitForChild("Place", 9e9):FireServer(43, CFrame.new(-6.62330151, 387.914642, -12.9029284, 1, 0, 0, 0, 1, 0, 0, 0, 1), false, 3210)
+        game:GetService("ReplicatedStorage"):WaitForChild("Place", 9e9):FireServer(43, CFrame.new(-6.62330151, 387.914642, -12.9029284, 1, 0, 0, 0, 1, 0, 0, 0, 1), false, 3210)
+        game:GetService("ReplicatedStorage"):WaitForChild("Place", 9e9):FireServer(43, CFrame.new(-6.62330151, 387.914642, -12.9029284, 1, 0, 0, 0, 1, 0, 0, 0, 1), false, 3210)
+        game:GetService("ReplicatedStorage"):WaitForChild("Place", 9e9):FireServer(43, CFrame.new(-6.62330151, 387.914642, -12.9029284, 1, 0, 0, 0, 1, 0, 0, 0, 1), false, 3210)
+        game:GetService("ReplicatedStorage"):WaitForChild("Place", 9e9):FireServer(43, CFrame.new(-6.62330151, 387.914642, -12.9029284, 1, 0, 0, 0, 1, 0, 0, 0, 1), false, 3210)
+        game:GetService("ReplicatedStorage"):WaitForChild("Place", 9e9):FireServer(43, CFrame.new(-6.62330151, 387.914642, -12.9029284, 1, 0, 0, 0, 1, 0, 0, 0, 1), false, 3210)
+        game:GetService("ReplicatedStorage"):WaitForChild("Place", 9e9):FireServer(43, CFrame.new(-6.62330151, 387.914642, -12.9029284, 1, 0, 0, 0, 1, 0, 0, 0, 1), false, 3210)
+        game:GetService("ReplicatedStorage"):WaitForChild("Place", 9e9):FireServer(43, CFrame.new(-6.62330151, 387.914642, -12.9029284, 1, 0, 0, 0, 1, 0, 0, 0, 1), false, 3210)
+    else
+        game:GetService("ReplicatedStorage"):WaitForChild("Place", 9e9):FireServer(43, CFrame.new(33.5753098, 387.88269, 49.284771, 1, 0, 0, 0, 1, 0, 0, 0, 1), false, 3210)
+        game:GetService("ReplicatedStorage"):WaitForChild("Place", 9e9):FireServer(43, CFrame.new(33.5753098, 387.88269, 49.284771, 1, 0, 0, 0, 1, 0, 0, 0, 1), false, 3210)
+        game:GetService("ReplicatedStorage"):WaitForChild("Place", 9e9):FireServer(43, CFrame.new(33.5753098, 387.88269, 49.284771, 1, 0, 0, 0, 1, 0, 0, 0, 1), false, 3210)
+        game:GetService("ReplicatedStorage"):WaitForChild("Place", 9e9):FireServer(43, CFrame.new(33.5753098, 387.88269, 49.284771, 1, 0, 0, 0, 1, 0, 0, 0, 1), false, 3210)
+        game:GetService("ReplicatedStorage"):WaitForChild("Place", 9e9):FireServer(43, CFrame.new(33.5753098, 387.88269, 49.284771, 1, 0, 0, 0, 1, 0, 0, 0, 1), false, 3210)
+        game:GetService("ReplicatedStorage"):WaitForChild("Place", 9e9):FireServer(43, CFrame.new(33.5753098, 387.88269, 49.284771, 1, 0, 0, 0, 1, 0, 0, 0, 1), false, 3210)
+        game:GetService("ReplicatedStorage"):WaitForChild("Place", 9e9):FireServer(43, CFrame.new(33.5753098, 387.88269, 49.284771, 1, 0, 0, 0, 1, 0, 0, 0, 1), false, 3210)
+        game:GetService("ReplicatedStorage"):WaitForChild("Place", 9e9):FireServer(43, CFrame.new(33.5753098, 387.88269, 49.284771, 1, 0, 0, 0, 1, 0, 0, 0, 1), false, 3210)
+        game:GetService("ReplicatedStorage"):WaitForChild("Place", 9e9):FireServer(43, CFrame.new(33.5753098, 387.88269, 49.284771, 1, 0, 0, 0, 1, 0, 0, 0, 1), false, 3210)
+        game:GetService("ReplicatedStorage"):WaitForChild("Place", 9e9):FireServer(43, CFrame.new(33.5753098, 387.88269, 49.284771, 1, 0, 0, 0, 1, 0, 0, 0, 1), false, 3210)
+    end
+end
+}
+TabPlacer:CreateButton{
+    Name = "Knight 34kg",
+    Callback = function()
+    if placerPlayer2Enabled then
+        game:GetService("ReplicatedStorage"):WaitForChild("Place", 9e9):FireServer(31, CFrame.new(12.4702759, 383.094055, 11.1167831, 1, 0, 0, 0, 1, 0, 0, 0, 1), false, 3210)
+        game:GetService("ReplicatedStorage"):WaitForChild("Place", 9e9):FireServer(31, CFrame.new(12.4702759, 383.094055, 11.1167831, 1, 0, 0, 0, 1, 0, 0, 0, 1), false, 3210)
+        game:GetService("ReplicatedStorage"):WaitForChild("Place", 9e9):FireServer(31, CFrame.new(12.4702759, 383.094055, 11.1167831, 1, 0, 0, 0, 1, 0, 0, 0, 1), false, 3210)
+        game:GetService("ReplicatedStorage"):WaitForChild("Place", 9e9):FireServer(31, CFrame.new(12.4702759, 383.094055, 11.1167831, 1, 0, 0, 0, 1, 0, 0, 0, 1), false, 3210)
+        game:GetService("ReplicatedStorage"):WaitForChild("Place", 9e9):FireServer(31, CFrame.new(12.4702759, 383.094055, 11.1167831, 1, 0, 0, 0, 1, 0, 0, 0, 1), false, 3210)
+        game:GetService("ReplicatedStorage"):WaitForChild("Place", 9e9):FireServer(31, CFrame.new(12.4702759, 383.094055, 11.1167831, 1, 0, 0, 0, 1, 0, 0, 0, 1), false, 3210)
+        game:GetService("ReplicatedStorage"):WaitForChild("Place", 9e9):FireServer(31, CFrame.new(12.4702759, 383.094055, 11.1167831, 1, 0, 0, 0, 1, 0, 0, 0, 1), false, 3210)
+        game:GetService("ReplicatedStorage"):WaitForChild("Place", 9e9):FireServer(31, CFrame.new(12.4702759, 383.094055, 11.1167831, 1, 0, 0, 0, 1, 0, 0, 0, 1), false, 3210)
+        game:GetService("ReplicatedStorage"):WaitForChild("Place", 9e9):FireServer(31, CFrame.new(12.4702759, 383.094055, 11.1167831, 1, 0, 0, 0, 1, 0, 0, 0, 1), false, 3210)
+        game:GetService("ReplicatedStorage"):WaitForChild("Place", 9e9):FireServer(31, CFrame.new(12.4702759, 383.094055, 11.1167831, 1, 0, 0, 0, 1, 0, 0, 0, 1), false, 3210)
+    else
+        game:GetService("ReplicatedStorage"):WaitForChild("Place", 9e9):FireServer(31, CFrame.new(18.861618, 383.094055, 22.0731602, 1, 0, 0, 0, 1, 0, 0, 0, 1), false, 3210)
+        game:GetService("ReplicatedStorage"):WaitForChild("Place", 9e9):FireServer(31, CFrame.new(18.861618, 383.094055, 22.0731602, 1, 0, 0, 0, 1, 0, 0, 0, 1), false, 3210)
+        game:GetService("ReplicatedStorage"):WaitForChild("Place", 9e9):FireServer(31, CFrame.new(18.861618, 383.094055, 22.0731602, 1, 0, 0, 0, 1, 0, 0, 0, 1), false, 3210)
+        game:GetService("ReplicatedStorage"):WaitForChild("Place", 9e9):FireServer(31, CFrame.new(18.861618, 383.094055, 22.0731602, 1, 0, 0, 0, 1, 0, 0, 0, 1), false, 3210)
+        game:GetService("ReplicatedStorage"):WaitForChild("Place", 9e9):FireServer(31, CFrame.new(18.861618, 383.094055, 22.0731602, 1, 0, 0, 0, 1, 0, 0, 0, 1), false, 3210)
+        game:GetService("ReplicatedStorage"):WaitForChild("Place", 9e9):FireServer(31, CFrame.new(18.861618, 383.094055, 22.0731602, 1, 0, 0, 0, 1, 0, 0, 0, 1), false, 3210)
+        game:GetService("ReplicatedStorage"):WaitForChild("Place", 9e9):FireServer(31, CFrame.new(18.861618, 383.094055, 22.0731602, 1, 0, 0, 0, 1, 0, 0, 0, 1), false, 3210)
+        game:GetService("ReplicatedStorage"):WaitForChild("Place", 9e9):FireServer(31, CFrame.new(18.861618, 383.094055, 22.0731602, 1, 0, 0, 0, 1, 0, 0, 0, 1), false, 3210)
+        game:GetService("ReplicatedStorage"):WaitForChild("Place", 9e9):FireServer(31, CFrame.new(18.861618, 383.094055, 22.0731602, 1, 0, 0, 0, 1, 0, 0, 0, 1), false, 3210)
+        game:GetService("ReplicatedStorage"):WaitForChild("Place", 9e9):FireServer(31, CFrame.new(18.861618, 383.094055, 22.0731602, 1, 0, 0, 0, 1, 0, 0, 0, 1), false, 3210)
+    end
+end
+}
+TabPlacer:CreateButton{
+    Name = "Parsnik 14kg",
+    Callback = function()
+    if placerPlayer2Enabled then
+        game:GetService("ReplicatedStorage"):WaitForChild("Place", 9e9):FireServer(50, CFrame.new(-9.64400864, 383.094055, -14.1523552, -4.37113883e-08, 0, 1, 0, 1, 0, -1, 0, -4.37113883e-08), false, 2240)
+        game:GetService("ReplicatedStorage"):WaitForChild("Place", 9e9):FireServer(50, CFrame.new(-9.64400864, 383.094055, -14.1523552, -4.37113883e-08, 0, 1, 0, 1, 0, -1, 0, -4.37113883e-08), false, 2240)
+        game:GetService("ReplicatedStorage"):WaitForChild("Place", 9e9):FireServer(50, CFrame.new(-9.64400864, 383.094055, -14.1523552, -4.37113883e-08, 0, 1, 0, 1, 0, -1, 0, -4.37113883e-08), false, 2240)
+        game:GetService("ReplicatedStorage"):WaitForChild("Place", 9e9):FireServer(50, CFrame.new(-9.64400864, 383.094055, -14.1523552, -4.37113883e-08, 0, 1, 0, 1, 0, -1, 0, -4.37113883e-08), false, 2240)
+        game:GetService("ReplicatedStorage"):WaitForChild("Place", 9e9):FireServer(50, CFrame.new(-9.64400864, 383.094055, -14.1523552, -4.37113883e-08, 0, 1, 0, 1, 0, -1, 0, -4.37113883e-08), false, 2240)
+        game:GetService("ReplicatedStorage"):WaitForChild("Place", 9e9):FireServer(50, CFrame.new(-9.64400864, 383.094055, -14.1523552, -4.37113883e-08, 0, 1, 0, 1, 0, -1, 0, -4.37113883e-08), false, 2240)
+        game:GetService("ReplicatedStorage"):WaitForChild("Place", 9e9):FireServer(50, CFrame.new(-9.64400864, 383.094055, -14.1523552, -4.37113883e-08, 0, 1, 0, 1, 0, -1, 0, -4.37113883e-08), false, 2240)
+        game:GetService("ReplicatedStorage"):WaitForChild("Place", 9e9):FireServer(50, CFrame.new(-9.64400864, 383.094055, -14.1523552, -4.37113883e-08, 0, 1, 0, 1, 0, -1, 0, -4.37113883e-08), false, 2240)
+        game:GetService("ReplicatedStorage"):WaitForChild("Place", 9e9):FireServer(50, CFrame.new(-9.64400864, 383.094055, -14.1523552, -4.37113883e-08, 0, 1, 0, 1, 0, -1, 0, -4.37113883e-08), false, 2240)
+        game:GetService("ReplicatedStorage"):WaitForChild("Place", 9e9):FireServer(50, CFrame.new(-9.64400864, 383.094055, -14.1523552, -4.37113883e-08, 0, 1, 0, 1, 0, -1, 0, -4.37113883e-08), false, 2240)
+    else
+        game:GetService("ReplicatedStorage"):WaitForChild("Place", 9e9):FireServer(50, CFrame.new(37.8275986, 383.094055, 42.2782135, -4.37113883e-08, 0, 1, 0, 1, 0, -1, 0, -4.37113883e-08), false, 3125)
+        game:GetService("ReplicatedStorage"):WaitForChild("Place", 9e9):FireServer(50, CFrame.new(37.8275986, 383.094055, 42.2782135, -4.37113883e-08, 0, 1, 0, 1, 0, -1, 0, -4.37113883e-08), false, 3125)
+        game:GetService("ReplicatedStorage"):WaitForChild("Place", 9e9):FireServer(50, CFrame.new(37.8275986, 383.094055, 42.2782135, -4.37113883e-08, 0, 1, 0, 1, 0, -1, 0, -4.37113883e-08), false, 3125)
+        game:GetService("ReplicatedStorage"):WaitForChild("Place", 9e9):FireServer(50, CFrame.new(37.8275986, 383.094055, 42.2782135, -4.37113883e-08, 0, 1, 0, 1, 0, -1, 0, -4.37113883e-08), false, 3125)
+        game:GetService("ReplicatedStorage"):WaitForChild("Place", 9e9):FireServer(50, CFrame.new(37.8275986, 383.094055, 42.2782135, -4.37113883e-08, 0, 1, 0, 1, 0, -1, 0, -4.37113883e-08), false, 3125)
+        game:GetService("ReplicatedStorage"):WaitForChild("Place", 9e9):FireServer(50, CFrame.new(37.8275986, 383.094055, 42.2782135, -4.37113883e-08, 0, 1, 0, 1, 0, -1, 0, -4.37113883e-08), false, 3125)
+        game:GetService("ReplicatedStorage"):WaitForChild("Place", 9e9):FireServer(50, CFrame.new(37.8275986, 383.094055, 42.2782135, -4.37113883e-08, 0, 1, 0, 1, 0, -1, 0, -4.37113883e-08), false, 3125)
+        game:GetService("ReplicatedStorage"):WaitForChild("Place", 9e9):FireServer(50, CFrame.new(37.8275986, 383.094055, 42.2782135, -4.37113883e-08, 0, 1, 0, 1, 0, -1, 0, -4.37113883e-08), false, 3125)
+        game:GetService("ReplicatedStorage"):WaitForChild("Place", 9e9):FireServer(50, CFrame.new(37.8275986, 383.094055, 42.2782135, -4.37113883e-08, 0, 1, 0, 1, 0, -1, 0, -4.37113883e-08), false, 3125)
+        game:GetService("ReplicatedStorage"):WaitForChild("Place", 9e9):FireServer(50, CFrame.new(37.8275986, 383.094055, 42.2782135, -4.37113883e-08, 0, 1, 0, 1, 0, -1, 0, -4.37113883e-08), false, 3125)
+    
+    end
+end
+}
+TabPlacer:CreateSection("NewHome")
+TabPlacer:CreateSection("Roc")
+local TabHandler = Window:CreateTab("Handler", 77392032855648)
+TabHandler:CreateToggle{
+    Name = "EnableHandler",
+    CurrentValue = false,
+    Flag = "EnableHandlerVal",
+    Callback = function(value) handlerEnableHandler = value end
+}
+TabHandler:CreateSection("Handle")
+TabHandler:CreateButton{
+    Name = "Upgrade",
+    Callback = function()
+    end
+}
+TabHandler:CreateButton{
+    Name = "Target",
+    Callback = function()
+    end
+}
+TabHandler:CreateButton{
+    Name = "Sell",
+    Callback = function()
+    end
+}
+TabHandler:CreateSection("Autos")
+TabHandler:CreateToggle{
+    Name = "AutoUpgrade",
+    CurrentValue = false,
+    Flag = "AutoUpgradeVal",
+    Callback = function(value) handlerAutoUpgrade = value end
+}
+TabHandler:CreateToggle{
+    Name = "AutoSell",
+    CurrentValue = false,
+    Flag = "AutoSellVal",
+    Callback = function(value) handlerAutoSell = value end
+}
+local TabInGame = Window:CreateTab("InGame", 77392032855648)
+TabInGame:CreateDropdown{
+    Name = "Tower",
+    Options = towerNames,
+    CurrentOption = {towerNames[1]},
+    MultipleOptions = false,
+    Flag = "InGameTowerDropdown",
+    Callback = function(opt) inGameSelectedTower = opt[1] end
+}
+TabInGame:CreateSection("Placing")
+TabInGame:CreateButton{
+    Name = "Place",
+    Callback = function()
+    end
+}
+TabInGame:CreateToggle{
+    Name = "Special",
+    CurrentValue = false,
+    Flag = "SpecialVal",
+    Callback = function(value) inGameSpecialEnabled = value end
+}
+TabInGame:CreateToggle{
+    Name = "ShowWherePlace",
+    CurrentValue = false,
+    Flag = "ShowWherePlaceVal",
+    Callback = function(value) inGameShowWherePlace = value end
+}
+TabInGame:CreateSection("Fight/Spare")
+TabInGame:CreateToggle{
+    Name = "ShowFightToggle",
+    CurrentValue = false,
+    Flag = "FightToggle",
+    Callback = function(value) inGameShowFightToggle = value end
+}
+TabInGame:CreateSection("Trolling")
+TabInGame:CreateButton{
+    Name = "+1 ready",
+    Callback = function() game:GetService("ReplicatedStorage").Ready:FireServer(1)
+    end
+}
+TabInGame:CreateButton{
+    Name = "-1 ready",
+    Callback = function() game:GetService("ReplicatedStorage").Ready:FireServer(1)
+    end
+}
