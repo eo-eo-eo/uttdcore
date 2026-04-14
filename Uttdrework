@@ -47,7 +47,7 @@ local Window = Rayfield:CreateWindow{
         Invite = "noinvitelink",
         RememberJoins = true
     },
-    KeySystem = true,
+    KeySystem = false,
     KeySettings = {
         Title = "what the key",
         Subtitle = "enter key h",
